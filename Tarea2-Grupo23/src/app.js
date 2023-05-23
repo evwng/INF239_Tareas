@@ -15,6 +15,7 @@ app.get('/users/:id', UsersController.getUserById)
 app.post('/users', UsersController.createUser)
 app.get('/users/:id/posts', UsersController.usersPosts)
 
+app.get('/api/personajes', UsersControllers.getPersonajes)
 
 //==========================================================//
 app.get('/', (req, res) => {
