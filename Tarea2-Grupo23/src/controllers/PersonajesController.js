@@ -20,7 +20,7 @@ const getPersonajesById = async (req, res) =>{
 //POST
 const crearPersonaje = async (req, res) => {
     const { nombre, fuerza, fecha_nacimiento, objeto } = req.body
-    const personaje = await prisma.personaje.create({
+    const personaje = await prisma.personajes.create({
         data: {
             nombre,
             fuerza,
@@ -33,7 +33,19 @@ const crearPersonaje = async (req, res) => {
 
 //PUT
 const actualizarPersonaje = async (req, res) => {
-    const personajes = await prisma.personajes.update
+    const { id } = req.params
+    const personajes = await prisma.personajes.update ({
+        where: {
+            id: Number(id)
+        },
+        data: {
+            nombre,
+            fuerza,
+            fecha_nacimiento,
+            objeto
+        }
+    })
+    res.json(personajes)
 }
 
 //REMOVE
