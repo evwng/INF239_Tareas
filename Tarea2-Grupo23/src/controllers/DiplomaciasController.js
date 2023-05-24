@@ -2,14 +2,14 @@ import prisma from '../prismaClient.js'
 
 //GET para obtener todos los elementos de la tabla
 const getDiplomacias = async(req, res) => {
-    const diplomacias = await prisma.diplomacias.findMany()
+    const diplomacias = await prisma.Diplomacias.findMany()
     res.json(diplomacias)
 }
 
 //GET para obtener solamente un elemento específico de la tabla
 const getDiplomaciaById = async (req, res) =>{
     const { id_reino_1, id_reino_2 } = req.params 
-    const diplomacia = await prisma.diplomacias.findUnique({
+    const diplomacia = await prisma.Diplomacias.findUnique({
         where: {
             id_reino_1: Number(id_reino_1),
             id_reino_2: Number(id_reino_2)
@@ -21,20 +21,20 @@ const getDiplomaciaById = async (req, res) =>{
 //POST
 const crearDiplomacia = async (req, res) => {
     const { id_reino_1, id_reino_2, es_aliado } = req.body
-    const diplomacia = await prisma.diplomacia.create({
+    const diplomacia = await prisma.Diplomacias.create({
         data: {
             id_reino_1,
             id_reino_2,
             es_aliado
         }
     })
-    res.json( diplomacia )
+    res.json(diplomacia)
 }
 
 //PUT
 const actualizarDiplomacia = async (req, res) => {
     const { id_reino_2, id_reino_1, es_aliado } = req.body
-    const diplomacia = await prisma.diplomacias.update ({
+    const diplomacia = await prisma.Diplomacias.update ({
         where: {
             id_reino_1: Number(id_reino_1),
             id_reino_2: Number(id_reino_2)
@@ -49,7 +49,7 @@ const actualizarDiplomacia = async (req, res) => {
 //REMOVE
 const eliminarDiplomacia = async (req, res) => {
     const { id_reino_1, id_reino_2 } = req.params
-    const diplomacia = await prisma.diplomacias.delete({
+    const diplomacia = await prisma.Diplomacias.delete({
         where: {
             id_reino_1: Number(id_reino_1),
             id_reino_2: Number(id_reino_2)

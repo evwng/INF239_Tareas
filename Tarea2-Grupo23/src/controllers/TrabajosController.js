@@ -2,14 +2,14 @@ import prisma from '../prismaClient.js'
 
 //GET para obtener todos los elementos de la tabla
 const getTrabajos = async(req, res) => {
-    const trabajos = await prisma.trabajos.findMany()
+    const trabajos = await prisma.Trabajos.findMany()
     res.json(trabajos)
 }
 
 //GET para obtener solamente un elemento específico de la tabla
 const getTrabajoById = async (req, res) =>{
     const { id } = req.params 
-    const trabajo = await prisma.trabajos.findUnique({
+    const trabajo = await prisma.Trabajos.findUnique({
         where: {
             id: Number(id)
         }
@@ -20,7 +20,7 @@ const getTrabajoById = async (req, res) =>{
 //POST
 const crearTrabajo = async (req, res) => {
     const { descripcion, sueldo } = req.body
-    const trabajo = await prisma.trabajos.create({
+    const trabajo = await prisma.Trabajos.create({
         data: {
             descripcion,
             sueldo
@@ -31,8 +31,8 @@ const crearTrabajo = async (req, res) => {
 
 //PUT
 const actualizarTrabajo = async (req, res) => {
-    const { id } = req.params
-    const trabajo= await prisma.trabajos.update ({
+    const { id, descripcion, sueldo } = req.body
+    const trabajo = await prisma.Trabajos.update ({
         where: {
             id: Number(id)
         },
@@ -47,7 +47,7 @@ const actualizarTrabajo = async (req, res) => {
 //REMOVE
 const eliminarTrabajo = async (req, res) => {
     const { id } = req.params
-    const trabajo = await prisma.trabajos.delete({
+    const trabajo = await prisma.Trabajos.delete({
         where: {
             id: Number(id)
         }

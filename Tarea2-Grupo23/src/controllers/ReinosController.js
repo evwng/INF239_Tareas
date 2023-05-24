@@ -2,14 +2,14 @@ import prisma from '../prismaClient.js'
 
 //GET para obtener todos los elementos de la tabla
 const getReinos = async(req, res) => {
-    const reinos = await prisma.reinos.findMany()
+    const reinos = await prisma.Reinos.findMany()
     res.json(reinos)
 }
 
 //GET para obtener solamente un elemento específico de la tabla
 const getReinoById = async (req, res) =>{
-    const { id } = req.params 
-    const reino = await prisma.reinos.findUnique({
+    const { id } = req.params
+    const reino = await prisma.Reinos.findUnique({
         where: {
             id: Number(id)
         }
@@ -20,7 +20,7 @@ const getReinoById = async (req, res) =>{
 //POST
 const crearReino = async (req, res) => {
     const { nombre, ubicacion, superficie } = req.body
-    const reino = await prisma.reinos.create({
+    const reino = await prisma.Reinos.create({
         data: {
             nombre,
             ubicacion,
@@ -32,9 +32,8 @@ const crearReino = async (req, res) => {
 
 //PUT
 const actualizarReino = async (req, res) => {
-    const { id } = req.params
-    const { nombre, ubicacion, superficie } = req.body
-    const reino = await prisma.reinos.update ({
+    const { id, nombre, ubicacion, superficie } = req.body
+    const reino = await prisma.Reinos.update ({
         where: {
             id: Number(id)
         },
@@ -50,7 +49,7 @@ const actualizarReino = async (req, res) => {
 //REMOVE
 const eliminarReino = async (req, res) => {
     const { id } = req.params
-    const reino = await prisma.reinos.delete({
+    const reino = await prisma.Reinos.delete({
         where: {
             id: Number(id)
         }
