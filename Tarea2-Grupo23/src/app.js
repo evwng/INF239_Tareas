@@ -7,6 +7,7 @@ import Personaje_habita_reinoController from './controllers/Personaje_habita_rei
 import Personaje_tiene_trabajoController from './controllers/Personaje_tiene_trabajoController.js';
 import ReinosController from './controllers/ReinosController.js';
 import TrabajosController from './controllers/TrabajosController.js';
+import EndpointsController from './controllers/EndpointsController.js';
 import morgan from 'morgan';
 
 const ENV = process.env;
@@ -66,18 +67,19 @@ app.post('/api/trabajos', TrabajosController.crearTrabajo)
 app.put('/api/trabajos/:id', TrabajosController.actualizarTrabajo)
 app.delete('/api/trabajos/:id', TrabajosController.eliminarTrabajo)
 
+app.get('/api/top5personajesConMasFuerza', EndpointsController.top5PersonajesConMasFuerza)
+app.get('/api/personajeConMasKarts', EndpointsController.personajeConMasKarts)
+
 //==========================================================//
 app.get('/', (req, res) => {
     res.json({ message: 'Hello World!!' });
 })
 //==========================================================//
 
-
 // 404 not found route
 app.use((_, res) => {
     res.status(404).json({ message: 'Not found Crack!' });
 })
-
 
 //Init server
 app.listen(ENV.API_PORT, () => {

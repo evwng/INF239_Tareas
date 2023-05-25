@@ -29,7 +29,7 @@ CREATE TABLE "Karts" (
 -- CreateTable
 CREATE TABLE "Personajes" (
     "id" SERIAL NOT NULL,
-    "nombr" VARCHAR(45) NOT NULL,
+    "nombre" VARCHAR(45) NOT NULL,
     "fuerza" INTEGER NOT NULL,
     "fecha_nacimiento" TIMESTAMP(3) NOT NULL,
     "objeto" VARCHAR(30),

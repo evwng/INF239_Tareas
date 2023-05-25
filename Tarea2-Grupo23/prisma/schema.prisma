@@ -37,9 +37,9 @@ model Karts{
 
 model Personajes {
   id                 Int                       @id @default(autoincrement())
-  nombr              String                    @db.VarChar(45)
+  nombre             String                    @db.VarChar(45)
   fuerza             Int
-  fecha_nacimiento   DateTime
+  fecha_nacimiento   DateTime                  @default(now())
   objeto             String?                   @db.VarChar(30)
   personaje_karts    Karts[]
   personaje_reinos   Personaje_habita_reino[]
