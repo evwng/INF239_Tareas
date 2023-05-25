@@ -2,14 +2,14 @@ import prisma from '../prismaClient.js'
 
 //GET para obtener todos los elementos de la tabla
 const getDefensas = async(req, res) => {
-    const d = await prisma.Defensas.findMany()
+    const d = await prisma.defensas.findMany()
     res.json(d)
 }
 
 //GET para obtener solamente un elemento específico de la tabla
 const getDefensaById = async (req, res) =>{
     const { id } = req.params 
-    const d = await prisma.Defensas.findUnique({
+    const d = await prisma.defensas.findUnique({
         where: {
             id: Number(id)
         }
@@ -20,7 +20,7 @@ const getDefensaById = async (req, res) =>{
 //POST
 const crearDefensa = async (req, res) => {
     const { defensa } = req.body
-    const d = await prisma.Defensas.create({
+    const d = await prisma.defensas.create({
         data: {
             defensa
         }
@@ -31,7 +31,7 @@ const crearDefensa = async (req, res) => {
 //PUT
 const actualizarDefensa = async (req, res) => {
     const { id } = req.params
-    const d = await prisma.Defensas.update ({
+    const d = await prisma.defensas.update ({
         where: {
             id: Number(id)
         },
@@ -45,7 +45,7 @@ const actualizarDefensa = async (req, res) => {
 //REMOVE
 const eliminarDefensa = async (req, res) => {
     const { id } = req.params
-    const d = await prisma.Defensas.delete({
+    const d = await prisma.defensas.delete({
         where: {
             id: Number(id)
         }

@@ -2,14 +2,14 @@ import prisma from '../prismaClient.js'
 
 //GET para obtener todos los elementos de la tabla
 const getPersonajes = async(req, res) => {
-    const personajes = await prisma.Personajes.findMany()
+    const personajes = await prisma.personajes.findMany()
     res.json(personajes)
 }
 
 //GET para obtener solamente un elemento específico de la tabla
 const getPersonajesById = async (req, res) =>{
     const { id } = req.params 
-    const personaje = await prisma.Personajes.findUnique({
+    const personaje = await prisma.personajes.findUnique({
         where: {
             id: Number(id)
         }
@@ -20,7 +20,7 @@ const getPersonajesById = async (req, res) =>{
 //POST
 const crearPersonaje = async (req, res) => {
     const { nombre, fuerza, fecha_nacimiento, objeto } = req.body
-    const personaje = await prisma.Personajes.create({
+    const personaje = await prisma.personajes.create({
         data: {
             nombre,
             fuerza,
@@ -34,7 +34,7 @@ const crearPersonaje = async (req, res) => {
 //PUT
 const actualizarPersonaje = async (req, res) => {
     const { id } = req.params
-    const personajes = await prisma.Personajes.update ({
+    const personajes = await prisma.personajes.update ({
         where: {
             id: Number(id)
         },
@@ -51,7 +51,7 @@ const actualizarPersonaje = async (req, res) => {
 //REMOVE
 const eliminarPersonaje = async (req, res) => {
     const { id } = req.params
-    const personaje = await prisma.Personajes.delete({
+    const personaje = await prisma.personajes.delete({
         where: {
             id: Number(id)
         }

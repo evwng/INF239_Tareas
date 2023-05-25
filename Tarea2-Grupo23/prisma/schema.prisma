@@ -11,75 +11,75 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Defensas{
+model defensas{
   id      Int      @id @default(autoincrement())
   defensa String   @db.VarChar(45)
-  reinos  Reinos[]
+  reinos  reinos[]
 }
 
-model Diplomacias{
-  reino_1      Reinos  @relation("Reino_1", fields: [id_reino_1], references: [id])
+model diplomacias{
+  reino_1      reinos  @relation("Reino_1", fields: [id_reino_1], references: [id])
   id_reino_1   Int
-  reino_2      Reinos  @relation("Reino_2", fields: [id_reino_2], references: [id])
+  reino_2      reinos  @relation("Reino_2", fields: [id_reino_2], references: [id])
   id_reino_2   Int
   es_aliado    Boolean
   @@id([id_reino_1, id_reino_2])
 }
 
-model Karts{
+model karts{
   id                 Int         @id @default(autoincrement())
   modelo             String      @db.VarChar(45)
   color              String      @db.VarChar(45)
   velocidad_maxima   Int?
-  personaje          Personajes? @relation(fields: [id_personaje], references: [id])
+  personaje          personajes? @relation(fields: [id_personaje], references: [id])
   id_personaje       Int
 }
 
-model Personajes {
+model personajes {
   id                 Int                       @id @default(autoincrement())
   nombre             String                    @db.VarChar(45)
   fuerza             Int
   fecha_nacimiento   DateTime                  @default(now())
   objeto             String?                   @db.VarChar(30)
-  personaje_karts    Karts[]
-  personaje_reinos   Personaje_habita_reino[]
-  personaje_trabajos Personaje_tiene_trabajo[]
+  personaje_karts    karts[]
+  personaje_reinos   personaje_habita_reino[]
+  personaje_trabajos personaje_tiene_trabajo[]
 }
 
-model Personaje_habita_reino {
-  personaje        Personajes @relation(fields: [id_personaje], references: [id])
+model personaje_habita_reino {
+  personaje        personajes @relation(fields: [id_personaje], references: [id])
   id_personaje     Int 
-  reino            Reinos     @relation(fields: [id_reino], references: [id])
+  reino            reinos     @relation(fields: [id_reino], references: [id])
   id_reino         Int
-  fecha_registro   DateTime
+  fecha_registro   DateTime   @default(now())
   es_gobernante    Boolean
   @@id([id_personaje, id_reino])
 }
 
-model Personaje_tiene_trabajo {
-  trabajo       Trabajos   @relation(fields: [id_trabajo], references: [id])
+model personaje_tiene_trabajo {
+  trabajo       trabajos   @relation(fields: [id_trabajo], references: [id])
   id_trabajo    Int
-  personaje     Personajes @relation(fields: [id_personaje], references: [id])
+  personaje     personajes @relation(fields: [id_personaje], references: [id])
   id_personaje  Int
-  fecha_inicio  DateTime
+  fecha_inicio  DateTime   @default(now())
   fecha_termino DateTime?
   @@id([id_personaje, id_trabajo])
 }
 
-model Reinos {
+model reinos {
   id                  Int                      @id @default(autoincrement())
   nombre              String                   @db.VarChar(45)
   ubicacion           String                   @db.VarChar(45)
   superficie          Int
-  defensas            Defensas[]
-  reino_1_diplomacias Diplomacias[]            @relation("Reino_1")
-  reino_2_diplomacias Diplomacias[]            @relation("Reino_2")
-  reino_personajes    Personaje_habita_reino[]
+  defensas            defensas[]
+  reino_1_diplomacias diplomacias[]            @relation("Reino_1")
+  reino_2_diplomacias diplomacias[]            @relation("Reino_2")
+  reino_personajes    personaje_habita_reino[]
 }
 
-model Trabajos {
+model trabajos {
   id                 Int                       @id @default(autoincrement())
   descripcion        String?                   @db.VarChar(45)
   sueldo             Int
-  trabajo_personajes Personaje_tiene_trabajo[]
+  trabajo_personajes personaje_tiene_trabajo[]
 }

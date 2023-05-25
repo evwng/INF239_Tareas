@@ -2,14 +2,14 @@ import prisma from '../prismaClient.js'
 
 //GET para obtener todos los elementos de la tabla
 const getPersonaje_habita_reino = async(req, res) => {
-    const personajes_habitan_reinos = await prisma.Personaje_habita_reino.findMany()
+    const personajes_habitan_reinos = await prisma.personaje_habita_reino.findMany()
     res.json(personajes_habitan_reinos)
 }
 
 //GET para obtener solamente un elemento específico de la tabla
 const getPersonaje_habita_reinoById = async (req, res) =>{
     const { id_personaje, id_reino } = req.params 
-    const personaje_habita_reino = await prisma.Personaje_habita_reino.findUnique({
+    const personaje_habita_reino = await prisma.personaje_habita_reino.findUnique({
         where: {
             id_personaje: Number(id_personaje),
             id_reino: Number(id_reino),
@@ -21,7 +21,7 @@ const getPersonaje_habita_reinoById = async (req, res) =>{
 //POST
 const crearPersonaje_habita_reino = async (req, res) => {
     const { id_personaje, id_reino, fecha_registro, es_gobernante } = req.body
-    const personaje_habita_reino = await prisma.Personaje_habita_reino.create({
+    const personaje_habita_reino = await prisma.personaje_habita_reino.create({
         data: {
             id_personaje,
             id_reino,
@@ -35,7 +35,7 @@ const crearPersonaje_habita_reino = async (req, res) => {
 //PUT
 const actualizarPersonaje_habita_reino = async (req, res) => {
     const { id_personaje, id_reino, fecha_registro, es_gobernante } = req.body
-    const personaje_habita_reino = await prisma.Personaje_habita_reino.update ({
+    const personaje_habita_reino = await prisma.personaje_habita_reino.update ({
         where: {
             id_personaje: Number(id_personaje),
             id_reino: Number(id_reino)
@@ -51,7 +51,7 @@ const actualizarPersonaje_habita_reino = async (req, res) => {
 //REMOVE
 const eliminarPersonaje_habita_reino = async (req, res) => {
     const { id_personaje, id_reino } = req.params
-    const personaje_habita_reino = await prisma.Personaje_habita_reino.delete({
+    const personaje_habita_reino = await prisma.personaje_habita_reino.delete({
         where: {
             id_personaje: Number(id_personaje),
             id_reino: Number(id_reino)

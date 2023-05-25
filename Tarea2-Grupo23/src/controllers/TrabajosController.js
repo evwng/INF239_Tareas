@@ -20,7 +20,7 @@ const getTrabajoById = async (req, res) =>{
 //POST
 const crearTrabajo = async (req, res) => {
     const { descripcion, sueldo } = req.body
-    const trabajo = await prisma.Trabajos.create({
+    const trabajo = await prisma.trabajos.create({
         data: {
             descripcion,
             sueldo
@@ -32,7 +32,7 @@ const crearTrabajo = async (req, res) => {
 //PUT
 const actualizarTrabajo = async (req, res) => {
     const { id, descripcion, sueldo } = req.body
-    const trabajo = await prisma.Trabajos.update ({
+    const trabajo = await prisma.trabajos.update ({
         where: {
             id: Number(id)
         },
@@ -47,7 +47,7 @@ const actualizarTrabajo = async (req, res) => {
 //REMOVE
 const eliminarTrabajo = async (req, res) => {
     const { id } = req.params
-    const trabajo = await prisma.Trabajos.delete({
+    const trabajo = await prisma.trabajos.delete({
         where: {
             id: Number(id)
         }
