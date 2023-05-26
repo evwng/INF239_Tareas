@@ -36,9 +36,61 @@ const personajeConMasKarts = async (req, res) => {
     res.json(respuesta)
 }
 
+//CANTIDAD DE PERSONAJES QUE HABITAN EL REINO <id_reino>
+const cantidadHabitantes = async (req , res) => {
+    var contador = 0
+    const { id_reino } = req.params
+    const personajes_habitan_reinos = await prisma.personaje_habita_reino.findMany()
+    for (const habitante of personajes_habitan_reinos){
+        if (habitante.id_reino === Number(id_reino)){
+            contador = contador + 1
+        }
+    }
+    const respuesta = {
+        "id_reino": id_reino,
+        "Cantidad de personajes que habitan el reino": contador
+    }
+    res.json(respuesta)
+}
+
+//GOBERNANTE
+const gobernante = async (req , res) => {
+    const { id_reino } = req.params
+    const gobernantes_habitan_reinos = await prisma.personaje_habita_reino.findMany({
+        where: {
+            es_gobernante: true 
+        }
+    })
+    const personajes = await prisma.personajes.findMany()
+    var respuesta = []
+    if ( id_reino === undefined ){
+        for (const gobernante_habita_reino of gobernantes_habitan_reinos){
+            for (const personaje of personajes){
+                if (personaje.id === gobernante_habita_reino.id_personaje){
+                    respuesta.push(personaje)
+                }
+            }
+        }
+    }
+    else {
+        for(const gobernante_habita_reino of gobernantes_habitan_reinos){
+            if (gobernante_habita_reino.id_reino === Number(id_reino)){
+                for (const personaje of personajes){
+                    if (personaje.id === gobernante_habita_reino.id_personaje){
+                        respuesta.push(personaje)
+                    }
+                }
+            }
+        }
+    }
+    res.json(respuesta)
+}
+
 const EndpointsController = {
     top5PersonajesConMasFuerza,
-    personajeConMasKarts
+    personajeConMasKarts,
+    cantidadHabitantes,
+    gobernante
 }
 
 export default EndpointsController

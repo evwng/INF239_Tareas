@@ -11,8 +11,11 @@ const getPersonaje_tiene_trabajoById = async (req, res) =>{
     const { id_personaje, id_trabajo } = req.params 
     const personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.findUnique({
         where: {
-            id_personaje: Number(id_personaje),
-            id_trabajo: Number(id_trabajo)
+            id_personaje_id_trabajo:{
+                id_personaje: Number(id_personaje),
+                id_trabajo: Number(id_trabajo)
+            }
+
         }
     })
     res.json(personaje_tiene_trabajo)
@@ -37,8 +40,10 @@ const actualizarPersonaje_tiene_trabajo = async (req, res) => {
     const { id_personaje, id_trabajo, fecha_inicio, fecha_termino } = req.body
     const personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.update ({
         where: {
-            id_personaje: Number(id_personaje),
-            id_trabajo: Number(id_trabajo)
+            id_personaje_id_trabajo: {
+                id_personaje: Number(id_personaje),
+                id_trabajo: Number(id_trabajo)
+            }
         },
         data: {
             fecha_inicio,
@@ -53,8 +58,11 @@ const eliminarPersonaje_tiene_trabajo = async (req, res) => {
     const { id_personaje, id_trabajo } = req.params
     const personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.delete({
         where: {
-            id_personaje: Number(id_personaje),
-            id_trabajo: Number(id_trabajo)
+            id_personaje_id_trabajo:{
+                id_personaje: Number(id_personaje),
+                id_trabajo: Number(id_trabajo) 
+            }
+
         }
     })
     res.json(personaje_tiene_trabajo)

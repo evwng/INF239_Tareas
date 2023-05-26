@@ -26,7 +26,7 @@ app.put('/api/defensas/:id', DefensasController.actualizarDefensa)
 app.delete('/api/defensas/:id', DefensasController.eliminarDefensa)
 
 app.get('/api/diplomacias', DiplomaciasController.getDiplomacias)
-app.get('/api/diplomacias/:id', DiplomaciasController.getDiplomaciaById)
+app.get('/api/diplomacias/:id_reino_1/:id_reino_2', DiplomaciasController.getDiplomaciaById)
 app.post('/api/diplomacias', DiplomaciasController.crearDiplomacia)
 app.put('/api/diplomacias/', DiplomaciasController.actualizarDiplomacia)
 app.delete('/api/diplomacias/:id_reino_1/:id_reino_2', DiplomaciasController.eliminarDiplomacia)
@@ -69,6 +69,8 @@ app.delete('/api/trabajos/:id', TrabajosController.eliminarTrabajo)
 
 app.get('/api/top5personajesConMasFuerza', EndpointsController.top5PersonajesConMasFuerza)
 app.get('/api/personajeConMasKarts', EndpointsController.personajeConMasKarts)
+app.get('/api/cantidadHabitantes/:id_reino', EndpointsController.cantidadHabitantes)
+app.get('/api/gobernante/:id_reino?', EndpointsController.gobernante)
 
 //==========================================================//
 app.get('/', (req, res) => {

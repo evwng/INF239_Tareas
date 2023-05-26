@@ -1,51 +1,38 @@
-const karts = 
-    [{"id": 1,
-     "id_personaje": 1},
-    {"id": 2,
-     "id_personaje": 1},
-    {"id": 3,
-     "id_personaje": 1},
-    {"id": 4,
-     "id_personaje": 2},
-    {"id": 5,
-     "id_personaje": 3},
-    {"id": 6,
-     "id_personaje": 3},
-    {"id": 7,
-     "id_personaje": 3},
-    {"id": 8,
-     "id_personaje": 3}
-]
 
-var arreglo = []
-for (const kart of karts){
-    var flag = false
-    if (arreglo.length > 0){
-        for (var contador = 0; contador < arreglo.length; contador++){
-            if (arreglo[contador][0] === kart.id_personaje){
-                arreglo[contador][1] += 1
-                flag = true
-            }
-        }
+
+
+const id_reino = 2
+const personajes_habitan_reinos = [
+    { 
+        "id_personaje": 1,
+        "id_reino": 1,
+        "es_gobernante": false    
+    },
+    {
+        "id_personaje": 2,
+        "id_reino": 2,
+        "es_gobernante": false
+    },
+    {
+        "id_personaje": 3,
+        "id_reino": 1,
+        "es_gobernante": true
+    },
+    {
+        "id_personaje": 4,
+        "id_reino": 2,
+        "es_gobernante": true
     }
-    if (flag === false){arreglo.push([kart.id_personaje, 1])}
-}
-
-console.log(arreglo)
-
-arreglo = arreglo.sort((a, b) => b[1] - a[1])
-
-console.log(arreglo)
-
-
-const personaje = [
-    {"id": 3,
-     "nombre": "Holaaa"},
 ]
-
-const respuesta = {
-    "nombre": personaje[0].nombre,
-    "cantidad de karts": arreglo[0][1]
+var contador = 0
+for (const habitante of personajes_habitan_reinos){
+    if (habitante.id_reino === id_reino){
+        contador += 1
+    }
 }
-
+console.log(contador)
+const respuesta = {
+    "id_reino": id_reino,
+    "Cantidad de personajes que habitan el reino": contador
+}
 console.log(respuesta)
