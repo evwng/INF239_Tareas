@@ -32,7 +32,7 @@ model karts{
   color              String      @db.VarChar(45)
   velocidad_maxima   Int?
   personaje          personajes? @relation(fields: [id_personaje], references: [id])
-  id_personaje       Int
+  id_personaje       Int?
 }
 
 model personajes {
