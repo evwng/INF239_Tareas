@@ -10,13 +10,11 @@ const getDefensas = async(req, res) => {
 }
 
 //GET para obtener solamente un elemento específico de la tabla
-const getDefensaById = async (req, res) =>{
+const getDefensaById = async (req, res) => {
     try {
-        const { id } = req.params
+        const {id} = req.params
         const d = await prisma.defensas.findUnique({
-            where: {
-                id: Number(id)
-            }
+            where: {id: Number(id)}
         })
         res.json(d)
     }
@@ -26,13 +24,11 @@ const getDefensaById = async (req, res) =>{
 //POST
 const crearDefensa = async (req, res) => {
     try {
-        const { defensa } = req.body
+        const {defensa} = req.body
         if (defensa === undefined){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
         else {
             const d = await prisma.defensas.create({
-                data: {
-                    defensa
-                }
+                data: {defensa}
             })
             res.json(d)
         }
@@ -43,17 +39,13 @@ const crearDefensa = async (req, res) => {
 //PUT
 const actualizarDefensa = async (req, res) => {
     try {
-        const { id } = req.params
-        const { defensa } = req.body
+        const {id} = req.params
+        const {defensa} = req.body
         if (defensa === undefined){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
         else {
             const d = await prisma.defensas.update ({
-                where: {
-                    id: Number(id)
-                },
-                data: {
-                    defensa
-                }
+                where: {id: Number(id)},
+                data: {defensa}
             })
             res.json(d)
         }
@@ -61,14 +53,12 @@ const actualizarDefensa = async (req, res) => {
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
 
-//REMOVE
+//DELETE
 const eliminarDefensa = async (req, res) => {
     try {
-        const { id } = req.params
+        const {id} = req.params
         const d = await prisma.defensas.delete({
-            where: {
-                id: Number(id)
-            }
+            where: {id: Number(id)}
         })
         res.json(d)
     }
