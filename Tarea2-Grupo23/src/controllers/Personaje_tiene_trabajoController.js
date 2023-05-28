@@ -51,22 +51,19 @@ const actualizarPersonaje_tiene_trabajo = async (req, res) => {
     try {
         const {id_personaje, id_trabajo} = req.params
         const {fecha_inicio, fecha_termino} = req.body
-        if (fecha_inicio === undefined){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
-        else {
-            const personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.update ({
-                where: {
-                    id_personaje_id_trabajo: {
-                        id_personaje: Number(id_personaje),
-                        id_trabajo: Number(id_trabajo)
-                    }
-                },
-                data: {
-                    fecha_inicio,
-                    fecha_termino
+        const personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.update ({
+            where: {
+                id_personaje_id_trabajo: {
+                    id_personaje: Number(id_personaje),
+                    id_trabajo: Number(id_trabajo)
                 }
-            })
-            res.json(personaje_tiene_trabajo)
-        }
+            },
+            data: {
+                fecha_inicio,
+                fecha_termino
+            }
+        })
+        res.json(personaje_tiene_trabajo)
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -83,7 +80,7 @@ const eliminarPersonaje_tiene_trabajo = async (req, res) => {
                 }
             }
         })
-        res.json(personaje_tiene_trabajo)
+        res.json({message: "Eliminado con éxito"})
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }

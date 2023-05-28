@@ -46,19 +46,16 @@ const actualizarKart = async (req, res) => {
     try {
         const {id} = req.params
         const {modelo, color, velocidad_maxima, id_personaje} = req.body
-        if (modelo === undefined || color === undefined){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
-        else {
-            const kart = await prisma.karts.update ({
-                where: {id: Number(id)},
-                data: {
-                    modelo,
-                    color,
-                    velocidad_maxima,
-                    id_personaje
-                }
-            })
-            res.json(kart)
-        }
+        const kart = await prisma.karts.update ({
+            where: {id: Number(id)},
+            data: {
+                modelo,
+                color,
+                velocidad_maxima,
+                id_personaje
+            }
+        })
+        res.json(kart)
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -70,7 +67,7 @@ const eliminarKart = async (req, res) => {
         const kart = await prisma.karts.delete({
             where: {id: Number(id)}
         })
-        res.json(kart)
+        res.json({message: "Eliminado con éxito"})
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }

@@ -50,19 +50,16 @@ const actualizarDiplomacia = async (req, res) => {
     try {
         const {id_reino_1, id_reino_2} = req.params
         const {es_aliado} = req.body
-        if (es_aliado === undefined){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
-        else {
-            const diplomacia = await prisma.diplomacias.update ({
-                where: {
-                    id_reino_1_id_reino_2: {
-                        id_reino_1: Number(id_reino_1),
-                        id_reino_2: Number(id_reino_2)
-                    }
-                },
-                data: {es_aliado}
-            })
-            res.json(diplomacia)
-        }
+        const diplomacia = await prisma.diplomacias.update ({
+            where: {
+                id_reino_1_id_reino_2: {
+                    id_reino_1: Number(id_reino_1),
+                    id_reino_2: Number(id_reino_2)
+                }
+            },
+            data: {es_aliado}
+        })
+        res.json(diplomacia)
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
             

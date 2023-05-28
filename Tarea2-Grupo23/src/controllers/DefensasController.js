@@ -24,11 +24,17 @@ const getDefensaById = async (req, res) => {
 //POST
 const crearDefensa = async (req, res) => {
     try {
-        const {defensa} = req.body
-        if (defensa === undefined){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
+        const {defensa, reinos_crear, reinos_conectar} = req.body
+        if (defensa === undefined || (reinos_crear === undefined && reinos_conectar === undefined)){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
         else {
             const d = await prisma.defensas.create({
-                data: {defensa}
+                data: {
+                    defensa,
+                    reinos: {
+                        create: reinos_crear,
+                        connect: reinos_conectar
+                    }
+                }
             })
             res.status(201).json(d)
         }
@@ -40,15 +46,18 @@ const crearDefensa = async (req, res) => {
 const actualizarDefensa = async (req, res) => {
     try {
         const {id} = req.params
-        const {defensa} = req.body
-        if (defensa === undefined){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
-        else {
-            const d = await prisma.defensas.update ({
-                where: {id: Number(id)},
-                data: {defensa}
-            })
-            res.json(d)
-        }
+        const {defensa, reinos_crear, reinos_conectar} = req.body
+        const d = await prisma.defensas.update ({
+            where: {id: Number(id)},
+            data: {
+                defensa,
+                reinos: {
+                    create: reinos_crear,
+                    connect: reinos_conectar
+                }
+            }
+        })
+        res.json(d)
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -57,15 +66,6 @@ const actualizarDefensa = async (req, res) => {
 const eliminarDefensa = async (req, res) => {
     try {
         const {id} = req.params
-        //ELIMINACIÓN EN CASCADA: DEFENSASTOREINOS 
-        const defensas_to_reinos = await prisma._defensasToreinos.findMany({
-            where: {A: Number(id)}
-        })
-        if (defensas_to_reinos != []){
-            const defensas_to_reinos = await prisma._defensasToreinos.deleteMany({
-                where: {A: Number(id)}
-            })
-        }
         const d = await prisma.defensas.delete({
             where: {id: Number(id)}
         })
