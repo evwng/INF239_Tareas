@@ -3,7 +3,7 @@ import prisma from '../prismaClient.js'
 //GET para obtener todos los elementos de la tabla
 const getTrabajos = async(req, res) => {
     try {
-        const trabajos = await prisma.Trabajos.findMany()
+        const trabajos = await prisma.trabajos.findMany()
         res.json(trabajos)
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
@@ -13,7 +13,7 @@ const getTrabajos = async(req, res) => {
 const getTrabajoById = async (req, res) => {
     try {
         const {id} = req.params 
-        const trabajo = await prisma.Trabajos.findUnique({
+        const trabajo = await prisma.trabajos.findUnique({
             where: {id: Number(id)}
         })
         res.json(trabajo)
@@ -33,7 +33,7 @@ const crearTrabajo = async (req, res) => {
                     sueldo
                 }
             })
-            res.json(trabajo)
+            res.status(201).json(trabajo)
         }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
@@ -75,7 +75,7 @@ const eliminarTrabajo = async (req, res) => {
         const trabajo = await prisma.trabajos.delete({
             where: {id: Number(id)}
         })
-        res.status(201).json(trabajo)
+        res.json(trabajo)
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
