@@ -35,7 +35,7 @@ const crearPersonaje = async (req, res) => {
                     objeto
                 }
             })
-            res.json(personaje)
+            res.status(201).json(personaje)
         }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
@@ -46,7 +46,7 @@ const actualizarPersonaje = async (req, res) => {
     try {
         const {id} = req.params
         const {nombre, fuerza, fecha_nacimiento, objeto} = req.body
-        if (nombre === undefined || fuerza === undefined){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
+        if (nombre === undefined || fuerza === undefined || fecha_nacimiento === undefined){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
         else {
             const personajes = await prisma.personajes.update ({
                 where: {id: Number(id)},
@@ -67,6 +67,39 @@ const actualizarPersonaje = async (req, res) => {
 const eliminarPersonaje = async (req, res) => {
     try {
         const {id} = req.params
+        //ELIMINACIÓN EN CASCADA: TABLA PERSONAJE_TIENE_TRABAJO
+        const personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.findMany({
+            where: {id_personaje: Number(id)}
+        })
+        if (personaje_tiene_trabajo !== []){
+            personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.deleteMany({
+                where: {id_personaje: Number(id)}
+            })
+        }
+        //ELIMINACIÓN EN CASCADA: TABLA PERSONAJE_HABITA_REINO
+        const personaje_habita_reino = await prisma.personaje_habita_reino.findMany({
+            where: {id_personaje: Number(id)}
+        })
+        if (personaje_habita_reino !== []){
+            personaje_habita_reino = await prisma.personaje_habita_reino.deleteMany({
+                where: {id_personaje: Number(id)}
+            })
+        }
+        //ACTUALIZACIÓN EN CASCADA: TABLA KARTS
+        const karts = await prisma.karts.findMany({
+            where: {id_personaje: Number(id)}
+        })
+        if (karts !== []){
+            karts= await prisma.karts.updateMany({
+                where: {id_personaje: Number(id)},
+                data : {
+                    modelo: karts.modelo,
+                    color: karts.color,
+                    velocidad_maxima: karts.velocidad_maxima,
+                    id_personaje: null
+                }
+            })
+        }
         const personaje = await prisma.personajes.delete({
             where: {id: Number(id)}
         })

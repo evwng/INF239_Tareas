@@ -35,7 +35,7 @@ const crearKart = async (req, res) => {
                     id_personaje
                 }
             })
-            res.json(kart)
+            res.status(201).json(kart)
         }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}

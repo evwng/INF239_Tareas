@@ -30,7 +30,7 @@ const getPersonaje_tiene_trabajoById = async (req, res) => {
 const crearPersonaje_tiene_trabajo = async (req, res) => {
     try {
         const {id_personaje, id_trabajo, fecha_inicio, fecha_termino} = req.body
-        if (id_personaje === undefined|| id_trabajo === undefined || fecha_inicio === undefined){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
+        if (id_personaje === undefined|| id_trabajo === undefined){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
         else {
             const personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.create({
                 data: {
@@ -40,7 +40,7 @@ const crearPersonaje_tiene_trabajo = async (req, res) => {
                     fecha_termino
                 }
             })
-            res.json(personaje_tiene_trabajo)
+            res.status(201).json(personaje_tiene_trabajo)
         }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}

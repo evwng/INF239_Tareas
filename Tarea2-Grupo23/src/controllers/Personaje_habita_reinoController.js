@@ -21,7 +21,7 @@ const getPersonaje_habita_reinoById = async (req, res) => {
                 }
             }
         })
-        res.json(personaje_habita_reino)
+        res.status(201).json(personaje_habita_reino)
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -30,7 +30,7 @@ const getPersonaje_habita_reinoById = async (req, res) => {
 const crearPersonaje_habita_reino = async (req, res) => {
     try {
         const {id_personaje, id_reino, fecha_registro, es_gobernante} = req.body
-        if (id_personaje === undefined|| id_reino === undefined || fecha_registro === undefined || es_gobernante === undefined){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
+        if (id_personaje === undefined|| id_reino === undefined || es_gobernante === undefined){res.status(400).json({message: "Solicitud incorrecta. Faltan datos"})}
         else {
             const personaje_habita_reino = await prisma.personaje_habita_reino.create({
                 data: {

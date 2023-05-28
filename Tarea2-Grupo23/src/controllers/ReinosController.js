@@ -34,7 +34,7 @@ const crearReino = async (req, res) => {
                     superficie,
                 }
             })
-            res.json(reino)
+            res.status(201).json(reino)
         }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
@@ -65,6 +65,43 @@ const actualizarReino = async (req, res) => {
 const eliminarReino = async (req, res) => {
     try {
         const {id} = req.params
+        //ELIMINACIÓN EN CASCADA: TABLA PERSONAJE_HABITA_REINO
+        const personaje_habita_reino = await prisma.personaje_habita_reino.findMany({
+            where: {id_reino: Number(id)}
+        })
+        if (personaje_habita_reino != []){
+            const personaje_habita_reino = await prisma.personaje_habita_reino.deleteMany({
+                where: {id_reino: Number(id)}
+            })
+        }
+        //ELIMINACIÓN EN CASCADA: DIPLOMACIAS
+        const diplomacia = await prisma.personaje_diplomacias.findMany({
+            where: {
+                OR: [
+                    { id_reino_1 : Number(id)},
+                    {id_reino_2: Number(id)}
+                ]
+            }
+        })
+        if (diplomacia != []){
+            const diplomacia = await prisma.diplomacias.deleteMany({
+                where: {
+                    OR: [
+                        { id_reino_1 : Number(id)},
+                        {id_reino_2: Number(id)}
+                    ]
+                }
+            })
+        }
+        //ELIMINACIÓN EN CASCADA: DEFENSASTOREINOS
+        const defensas_to_reinos = await prisma._defensasToreinos.findMany({
+            where: {B: Number(id)}
+        })
+        if (defensas_to_reinos != []){
+            const defensas_to_reinos = await prisma._defensasToreinos.deleteMany({
+                where: {B: Number(id)}
+            })
+        }
         const reino = await prisma.reinos.delete({
             where: {id: Number(id)}
         })

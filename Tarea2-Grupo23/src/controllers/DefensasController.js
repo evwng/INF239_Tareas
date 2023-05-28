@@ -30,7 +30,7 @@ const crearDefensa = async (req, res) => {
             const d = await prisma.defensas.create({
                 data: {defensa}
             })
-            res.json(d)
+            res.status(201).json(d)
         }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
@@ -57,10 +57,19 @@ const actualizarDefensa = async (req, res) => {
 const eliminarDefensa = async (req, res) => {
     try {
         const {id} = req.params
+        //ELIMINACIÓN EN CASCADA: DEFENSASTOREINOS 
+        const defensas_to_reinos = await prisma._defensasToreinos.findMany({
+            where: {A: Number(id)}
+        })
+        if (defensas_to_reinos != []){
+            const defensas_to_reinos = await prisma._defensasToreinos.deleteMany({
+                where: {A: Number(id)}
+            })
+        }
         const d = await prisma.defensas.delete({
             where: {id: Number(id)}
         })
-        res.json(d)
+        res.json({message: "Eliminado con éxito"})
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }

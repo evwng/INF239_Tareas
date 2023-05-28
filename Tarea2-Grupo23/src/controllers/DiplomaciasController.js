@@ -39,7 +39,7 @@ const crearDiplomacia = async (req, res) => {
                     es_aliado
                 }
             })
-            res.json(diplomacia)
+            res.status(201).json(diplomacia)
         }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
@@ -80,7 +80,7 @@ const eliminarDiplomacia = async (req, res) => {
                 }
             }
         })
-        res.json(diplomacia)
+        res.json({message: "Eliminado con éxito"})
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
