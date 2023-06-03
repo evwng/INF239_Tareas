@@ -4,7 +4,8 @@ import prisma from '../prismaClient.js'
 const getKarts = async(req, res) => {
     try {
         const karts = await prisma.karts.findMany()
-        res.json(karts)
+        if (karts.length === 0){res.status(204).json()}
+        else {res.json(karts)}
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -16,7 +17,8 @@ const getKartById = async (req, res) => {
         const kart = await prisma.karts.findUnique({
             where: {id: Number(id)}
         })
-        res.json(kart)
+        if (kart === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {res.json(kart)}
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -39,23 +41,29 @@ const crearKart = async (req, res) => {
         }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
-}
+}  
 
 //PUT
 const actualizarKart = async (req, res) => {
     try {
         const {id} = req.params
         const {modelo, color, velocidad_maxima, id_personaje} = req.body
-        const kart = await prisma.karts.update ({
-            where: {id: Number(id)},
-            data: {
-                modelo,
-                color,
-                velocidad_maxima,
-                id_personaje
-            }
+        var kart = await prisma.karts.findUnique({
+            where: {id: Number(id)}
         })
-        res.json(kart)
+        if (kart === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {
+            kart = await prisma.karts.update ({
+                where: {id: Number(id)},
+                data: {
+                    modelo,
+                    color,
+                    velocidad_maxima,
+                    id_personaje
+                }
+            })
+            res.json(kart)
+        }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -64,10 +72,16 @@ const actualizarKart = async (req, res) => {
 const eliminarKart = async (req, res) => {
     try {
         const {id} = req.params
-        const kart = await prisma.karts.delete({
+        var kart = await prisma.karts.findUnique({
             where: {id: Number(id)}
         })
-        res.json({message: "Eliminado con éxito"})
+        if (kart === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {
+            kart = await prisma.karts.delete({
+                where: {id: Number(id)}
+            })
+            res.json({message: "Eliminado con éxito"})
+        }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }

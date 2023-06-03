@@ -4,7 +4,8 @@ import prisma from '../prismaClient.js'
 const getTrabajos = async(req, res) => {
     try {
         const trabajos = await prisma.trabajos.findMany()
-        res.json(trabajos)
+        if (trabajos.length === 0){res.status(204).json()}
+        else {res.json(trabajos)}
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -16,7 +17,8 @@ const getTrabajoById = async (req, res) => {
         const trabajo = await prisma.trabajos.findUnique({
             where: {id: Number(id)}
         })
-        res.json(trabajo)
+        if (trabajo === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {res.json(trabajo)}
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -44,14 +46,20 @@ const actualizarTrabajo = async (req, res) => {
     try {
         const {id} = req.params
         const {descripcion, sueldo} = req.body
-        const trabajo = await prisma.trabajos.update ({
-            where: {id: Number(id)},
-            data: {
-                descripcion,
-                sueldo
-            }
+        var trabajo = await prisma.trabajos.findUnique({
+            where: {id: Number(id)}
         })
-        res.json(trabajo)
+        if (trabajo === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {
+            trabajo = await prisma.trabajos.update ({
+                where: {id: Number(id)},
+                data: {
+                    descripcion,
+                    sueldo
+                }
+            })
+            res.json(trabajo)
+        }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -60,20 +68,26 @@ const actualizarTrabajo = async (req, res) => {
 const eliminarTrabajo = async (req, res) => {
     try {
         const {id} = req.params
-        //ELIMINACIÓN EN CASCADA: TABLA PERSONAJE_TIENE_TRABAJO
-        const personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.findMany({
-            where: {id_trabajo: Number(id)}
-        })
-        if (personaje_tiene_trabajo.length !== 0){
-            const personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.deleteMany({
-                where: {id_trabajo: Number(id)}
-            })
-        }
-        //ELIMINACIÓN
-        const trabajo = await prisma.trabajos.delete({
+        var trabajo = await prisma.trabajos.findUnique({
             where: {id: Number(id)}
         })
-        res.json({message: "Eliminado con éxito"})
+        if (trabajo === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {
+            //ELIMINACIÓN EN CASCADA: TABLA PERSONAJE_TIENE_TRABAJO
+            var personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.findMany({
+                where: {id_trabajo: Number(id)}
+            })
+            if (personaje_tiene_trabajo.length !== 0){
+                personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.deleteMany({
+                    where: {id_trabajo: Number(id)}
+                })
+            }
+            //ELIMINACIÓN
+            trabajo = await prisma.trabajos.delete({
+                where: {id: Number(id)}
+            })
+            res.json({message: "Eliminado con éxito"})
+        }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }

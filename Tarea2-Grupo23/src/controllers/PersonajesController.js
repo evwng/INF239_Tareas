@@ -4,7 +4,8 @@ import prisma from '../prismaClient.js'
 const getPersonajes = async(req, res) => {
     try {
         const personajes = await prisma.personajes.findMany()
-        res.json(personajes)
+        if (personajes.length === 0){res.status(204).json()}
+        else {res.json(personajes)}
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -16,7 +17,8 @@ const getPersonajesById = async (req, res) => {
         const personaje = await prisma.personajes.findUnique({
             where: {id: Number(id)}
         })
-        res.json(personaje)
+        if (personaje === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {res.json(personaje)}
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -46,16 +48,22 @@ const actualizarPersonaje = async (req, res) => {
     try {
         const {id} = req.params
         const {nombre, fuerza, fecha_nacimiento, objeto} = req.body
-        const personajes = await prisma.personajes.update ({
-            where: {id: Number(id)},
-            data: {
-                nombre,
-                fuerza,
-                fecha_nacimiento,
-                objeto
-            }
+        var personaje = await prisma.personajes.findUnique({
+            where: {id: Number(id)}
         })
-        res.json(personajes)
+        if (personaje === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {
+            personaje = await prisma.personajes.update ({
+                where: {id: Number(id)},
+                data: {
+                    nombre,
+                    fuerza,
+                    fecha_nacimiento,
+                    objeto
+                }
+            })
+            res.json(personaje)
+        }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -64,48 +72,47 @@ const actualizarPersonaje = async (req, res) => {
 const eliminarPersonaje = async (req, res) => {
     try {
         const {id} = req.params
-        //ELIMINACIÓN EN CASCADA: TABLA PERSONAJE_TIENE_TRABAJO
-        const personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.findMany({
-                where: {id_personaje: Number(id)}
-        })
-        console.log(personaje_tiene_trabajo)
-        if (personaje_tiene_trabajo.length !== 0){
-            personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.deleteMany({
-                    where: {id_personaje: Number(id)}
-            })
-        }
-        //ELIMINACIÓN EN CASCADA: TABLA PERSONAJE_HABITA_REINO
-        const personaje_habita_reino = await prisma.personaje_habita_reino.findMany({
-            where: {id_personaje: Number(id)}
-        })
-        if (personaje_habita_reino.length !== 0){
-            personaje_habita_reino = await prisma.personaje_habita_reino.deleteMany({
-                where: {id_personaje: Number(id)}
-            })
-        }
-        //ACTUALIZACIÓN EN CASCADA: TABLA KARTS
-        const karts = await prisma.karts.findMany({
-            where: {id_personaje: Number(id)}
-        })
-        if (karts.length !== 0){
-            karts= await prisma.karts.updateMany({
-                where: {id_personaje: Number(id)},
-                data : {
-                    modelo: karts.modelo,
-                    color: karts.color,
-                    velocidad_maxima: karts.velocidad_maxima,
-                    id_personaje: null
-                }
-            })
-        }
-        //ELIMINACIÓN
-        const personaje = await prisma.personajes.delete({
+        var personaje = await prisma.personajes.findUnique({
             where: {id: Number(id)}
         })
-        res.json({message: "Eliminado con éxito"})
+        if (personaje === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {
+            //ELIMINACIÓN EN CASCADA: TABLA PERSONAJE_TIENE_TRABAJO
+            var personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.findMany({
+                where: {id_personaje: Number(id)}
+            })
+            if (personaje_tiene_trabajo.length !== 0){
+                personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.deleteMany({
+                    where: {id_personaje: Number(id)}
+                })
+            }
+            //ELIMINACIÓN EN CASCADA: TABLA PERSONAJE_HABITA_REINO
+            var personaje_habita_reino = await prisma.personaje_habita_reino.findMany({
+                where: {id_personaje: Number(id)}
+            })
+            if (personaje_habita_reino.length !== 0){
+                personaje_habita_reino = await prisma.personaje_habita_reino.deleteMany({
+                    where: {id_personaje: Number(id)}
+                })
+            }
+            //ACTUALIZACIÓN EN CASCADA: TABLA KARTS
+            const karts = await prisma.karts.findMany({
+                where: {id_personaje: Number(id)}
+            })
+            if (karts.length !== 0){
+                karts = await prisma.karts.updateMany({
+                    where: {id_personaje: Number(id)},
+                    data: {id_personaje: null}
+                })
+            }
+            //ELIMINACIÓN
+            personaje = await prisma.personajes.delete({
+                where: {id: Number(id)}
+            })
+            res.json({message: "Eliminado con éxito"})
+        }
     }
-    catch (error){console.log(error)
-        res.status(500).json({message: "Internal Server Error"})}
+    catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
 
 const PersonajesController = {

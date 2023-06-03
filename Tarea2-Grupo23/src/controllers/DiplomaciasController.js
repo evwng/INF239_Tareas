@@ -4,7 +4,8 @@ import prisma from '../prismaClient.js'
 const getDiplomacias = async(req, res) => {
     try {
         const diplomacias = await prisma.diplomacias.findMany()
-        res.json(diplomacias)
+        if (diplomacias.length === 0){res.status(204).json()}
+        else {res.json(diplomacias)}
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -21,7 +22,8 @@ const getDiplomaciaById = async (req, res) => {
                 }
             }
         })
-        res.json(diplomacia)
+        if (diplomacia === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {res.json(diplomacia)}
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -50,16 +52,27 @@ const actualizarDiplomacia = async (req, res) => {
     try {
         const {id_reino_1, id_reino_2} = req.params
         const {es_aliado} = req.body
-        const diplomacia = await prisma.diplomacias.update ({
+        var diplomacia = await prisma.diplomacias.findUnique({
             where: {
                 id_reino_1_id_reino_2: {
                     id_reino_1: Number(id_reino_1),
                     id_reino_2: Number(id_reino_2)
                 }
-            },
-            data: {es_aliado}
+            }
         })
-        res.json(diplomacia)
+        if (diplomacia === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {
+            diplomacia = await prisma.diplomacias.update ({
+                where: {
+                    id_reino_1_id_reino_2: {
+                        id_reino_1: Number(id_reino_1),
+                        id_reino_2: Number(id_reino_2)
+                    }
+                },
+                data: {es_aliado}
+            })
+            res.json(diplomacia)
+        }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -68,7 +81,7 @@ const actualizarDiplomacia = async (req, res) => {
 const eliminarDiplomacia = async (req, res) => {
     try {
         const {id_reino_1, id_reino_2} = req.params
-        const diplomacia = await prisma.diplomacias.delete({
+        var diplomacia = await prisma.diplomacias.findUnique({
             where: {
                 id_reino_1_id_reino_2: {
                     id_reino_1: Number(id_reino_1),
@@ -76,7 +89,18 @@ const eliminarDiplomacia = async (req, res) => {
                 }
             }
         })
-        res.json({message: "Eliminado con éxito"})
+        if (diplomacia === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {
+            diplomacia = await prisma.diplomacias.delete({
+                where: {
+                    id_reino_1_id_reino_2: {
+                        id_reino_1: Number(id_reino_1),
+                        id_reino_2: Number(id_reino_2)
+                    }
+                }
+            })
+            res.json({message: "Eliminado con éxito"})
+        }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }

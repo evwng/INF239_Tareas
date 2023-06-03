@@ -1,6 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-//To migrate this file use the command: npx prisma migrate dev
+// To migrate this file use the command: npx prisma migrate dev
 
 generator client {
   provider = "prisma-client-js"
@@ -35,7 +35,27 @@ model karts{
   id_personaje       Int?
 }
 
-model personajes {
+model personaje_habita_reino{
+  personaje        personajes @relation(fields: [id_personaje], references: [id])
+  id_personaje     Int 
+  reino            reinos     @relation(fields: [id_reino], references: [id])
+  id_reino         Int
+  fecha_registro   DateTime   @default(now())
+  es_gobernante    Boolean
+  @@id([id_personaje, id_reino])
+}
+
+model personaje_tiene_trabajo{
+  trabajo       trabajos   @relation(fields: [id_trabajo], references: [id])
+  id_trabajo    Int
+  personaje     personajes @relation(fields: [id_personaje], references: [id])
+  id_personaje  Int
+  fecha_inicio  DateTime   @db.Date @default(now())
+  fecha_termino DateTime?  @db.Date
+  @@id([id_personaje, id_trabajo])
+}
+
+model personajes{
   id                 Int                       @id @default(autoincrement())
   nombre             String                    @db.VarChar(45)
   fuerza             Int
@@ -46,27 +66,7 @@ model personajes {
   personaje_trabajos personaje_tiene_trabajo[]
 }
 
-model personaje_habita_reino {
-  personaje        personajes @relation(fields: [id_personaje], references: [id])
-  id_personaje     Int 
-  reino            reinos     @relation(fields: [id_reino], references: [id])
-  id_reino         Int
-  fecha_registro   DateTime   @default(now())
-  es_gobernante    Boolean
-  @@id([id_personaje, id_reino])
-}
-
-model personaje_tiene_trabajo {
-  trabajo       trabajos   @relation(fields: [id_trabajo], references: [id])
-  id_trabajo    Int
-  personaje     personajes @relation(fields: [id_personaje], references: [id])
-  id_personaje  Int
-  fecha_inicio  DateTime   @db.Date @default(now())
-  fecha_termino DateTime?  @db.Date
-  @@id([id_personaje, id_trabajo])
-}
-
-model reinos {
+model reinos{
   id                  Int                      @id @default(autoincrement())
   nombre              String                   @db.VarChar(45)
   ubicacion           String                   @db.VarChar(45)
@@ -77,7 +77,7 @@ model reinos {
   reino_personajes    personaje_habita_reino[]
 }
 
-model trabajos {
+model trabajos{
   id                 Int                       @id @default(autoincrement())
   descripcion        String?                   @db.VarChar(45)
   sueldo             Int

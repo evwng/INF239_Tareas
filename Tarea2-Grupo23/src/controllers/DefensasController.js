@@ -3,8 +3,11 @@ import prisma from '../prismaClient.js'
 //GET para obtener todos los elementos de la tabla
 const getDefensas = async(req, res) => {
     try {
-        const d = await prisma.defensas.findMany()
-        res.json(d)
+        const d = await prisma.defensas.findMany({
+            include: {reinos: true}
+        })
+        if (d.length === 0){res.status(204).json()}
+        else {res.json(d)}
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -14,9 +17,11 @@ const getDefensaById = async (req, res) => {
     try {
         const {id} = req.params
         const d = await prisma.defensas.findUnique({
-            where: {id: Number(id)}
+            where: {id: Number(id)},
+            include: {reinos: true}
         })
-        res.json(d)
+        if (d === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {res.json(d)}
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -46,19 +51,25 @@ const crearDefensa = async (req, res) => {
 const actualizarDefensa = async (req, res) => {
     try {
         const {id} = req.params
-        const {defensa, reinos_crear, reinos_conectar, reinos_desconectar} = req.body
-        const d = await prisma.defensas.update ({
-            where: {id: Number(id)},
-            data: {
-                defensa,
-                reinos: {
-                    create: reinos_crear,
-                    connect: reinos_conectar,
-                    disconnect: reinos_desconectar
-                }
-            }
+        var d = await prisma.defensas.findUnique({
+            where: {id: Number(id)}
         })
-        res.json(d)
+        if (d === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {
+            const {defensa, reinos_crear, reinos_conectar, reinos_desconectar} = req.body
+            d = await prisma.defensas.update ({
+                where: {id: Number(id)},
+                data: {
+                    defensa,
+                    reinos: {
+                        create: reinos_crear,
+                        connect: reinos_conectar,
+                        disconnect: reinos_desconectar
+                    }
+                }
+            })
+            res.json(d)
+        }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -67,10 +78,16 @@ const actualizarDefensa = async (req, res) => {
 const eliminarDefensa = async (req, res) => {
     try {
         const {id} = req.params
-        const d = await prisma.defensas.delete({
+        var d = await prisma.defensas.findUnique({
             where: {id: Number(id)}
         })
-        res.json({message: "Eliminado con éxito"})
+        if (d === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {
+            d = await prisma.defensas.delete({
+                where: {id: Number(id)}
+            })
+            res.json({message: "Eliminado con éxito"})
+        }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }

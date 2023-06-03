@@ -4,7 +4,8 @@ import prisma from '../prismaClient.js'
 const getPersonaje_tiene_trabajo = async(req, res) => {
     try {
         const personajes_tienen_trabajos = await prisma.personaje_tiene_trabajo.findMany()
-        res.json(personajes_tienen_trabajos)
+        if (personajes_tienen_trabajos.length === 0){res.status(204).json()}
+        else {res.json(personajes_tienen_trabajos)}
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -21,7 +22,8 @@ const getPersonaje_tiene_trabajoById = async (req, res) => {
                 }
             }
         })
-        res.json(personaje_tiene_trabajo)
+        if (personaje_tiene_trabajo === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {res.json(personaje_tiene_trabajo)}
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -51,19 +53,30 @@ const actualizarPersonaje_tiene_trabajo = async (req, res) => {
     try {
         const {id_personaje, id_trabajo} = req.params
         const {fecha_inicio, fecha_termino} = req.body
-        const personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.update ({
+        var personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.findUnique({
             where: {
                 id_personaje_id_trabajo: {
                     id_personaje: Number(id_personaje),
                     id_trabajo: Number(id_trabajo)
                 }
-            },
-            data: {
-                fecha_inicio,
-                fecha_termino
             }
         })
-        res.json(personaje_tiene_trabajo)
+        if (personaje_tiene_trabajo === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {
+            personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.update ({
+                where: {
+                    id_personaje_id_trabajo: {
+                        id_personaje: Number(id_personaje),
+                        id_trabajo: Number(id_trabajo)
+                    }
+                },
+                data: {
+                    fecha_inicio,
+                    fecha_termino
+                }
+            })
+            res.json(personaje_tiene_trabajo)
+        }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }
@@ -72,15 +85,26 @@ const actualizarPersonaje_tiene_trabajo = async (req, res) => {
 const eliminarPersonaje_tiene_trabajo = async (req, res) => {
     try {
         const {id_personaje, id_trabajo} = req.params
-        const personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.delete({
+        var personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.findUnique({
             where: {
                 id_personaje_id_trabajo: {
                     id_personaje: Number(id_personaje),
-                    id_trabajo: Number(id_trabajo) 
+                    id_trabajo: Number(id_trabajo)
                 }
             }
         })
-        res.json({message: "Eliminado con éxito"})
+        if (personaje_tiene_trabajo === null){res.status(404).json({message: "No existe el elemento buscado"})}
+        else {
+            const personaje_tiene_trabajo = await prisma.personaje_tiene_trabajo.delete({
+                where: {
+                    id_personaje_id_trabajo: {
+                        id_personaje: Number(id_personaje),
+                        id_trabajo: Number(id_trabajo) 
+                    }
+                }
+            })
+            res.json({message: "Eliminado con éxito"})
+        }
     }
     catch (error){res.status(500).json({message: "Internal Server Error"})}
 }

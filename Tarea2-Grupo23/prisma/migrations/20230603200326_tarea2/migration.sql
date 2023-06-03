@@ -27,17 +27,6 @@ CREATE TABLE "karts" (
 );
 
 -- CreateTable
-CREATE TABLE "personajes" (
-    "id" SERIAL NOT NULL,
-    "nombre" VARCHAR(45) NOT NULL,
-    "fuerza" INTEGER NOT NULL,
-    "fecha_nacimiento" DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "objeto" VARCHAR(30),
-
-    CONSTRAINT "personajes_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "personaje_habita_reino" (
     "id_personaje" INTEGER NOT NULL,
     "id_reino" INTEGER NOT NULL,
@@ -55,6 +44,17 @@ CREATE TABLE "personaje_tiene_trabajo" (
     "fecha_termino" DATE,
 
     CONSTRAINT "personaje_tiene_trabajo_pkey" PRIMARY KEY ("id_personaje","id_trabajo")
+);
+
+-- CreateTable
+CREATE TABLE "personajes" (
+    "id" SERIAL NOT NULL,
+    "nombre" VARCHAR(45) NOT NULL,
+    "fuerza" INTEGER NOT NULL,
+    "fecha_nacimiento" DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "objeto" VARCHAR(30),
+
+    CONSTRAINT "personajes_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
