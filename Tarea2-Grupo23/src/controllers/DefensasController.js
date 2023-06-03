@@ -46,14 +46,15 @@ const crearDefensa = async (req, res) => {
 const actualizarDefensa = async (req, res) => {
     try {
         const {id} = req.params
-        const {defensa, reinos_crear, reinos_conectar} = req.body
+        const {defensa, reinos_crear, reinos_conectar, reinos_desconectar} = req.body
         const d = await prisma.defensas.update ({
             where: {id: Number(id)},
             data: {
                 defensa,
                 reinos: {
                     create: reinos_crear,
-                    connect: reinos_conectar
+                    connect: reinos_conectar,
+                    disconnect: reinos_desconectar
                 }
             }
         })
